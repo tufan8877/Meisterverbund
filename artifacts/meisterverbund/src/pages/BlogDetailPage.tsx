@@ -1,0 +1,72 @@
+import { Link } from "wouter";
+import { useGetBlogPost } from "@workspace/api-client-react";
+import { StarRating } from "@/components/StarRating";
+import { CommentSection } from "@/components/CommentSection";
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("de-AT", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+}
+
+interface BlogDetailPageProps {
+  slug: string;
+}
+
+export function BlogDetailPage({ slug }: BlogDetailPageProps) {
+  const { data: post, isLoading, isError } = useGetBlogPost(slug);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 animate-pulse">
+        <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
+        <div className="h-4 bg-muted rounded w-1/3 mb-8"></div>
+        <div className="space-y-3">
+          {Array.from({ length: 6 }, (_, i) => <div key={i} className="h-4 bg-muted rounded"></div>)}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !post) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 text-center">
+        <h1 className="text-xl font-bold mb-3">Beitrag nicht gefunden</h1>
+        <Link href="/blog" className="text-primary hover:underline">Zuruck zum Blog</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <Link href="/blog" className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary text-sm mb-6 transition-colors">
+        <span>←</span> Alle Beitrage
+      </Link>
+
+      <article>
+        <div className="mb-2">
+          <span className="inline-block px-2 py-0.5 bg-primary/10 text-primary text-xs rounded font-medium">
+            {post.category}
+          </span>
+        </div>
+        <h1 className="text-3xl font-extrabold mb-3 leading-tight">{post.title}</h1>
+        <p className="text-muted-foreground text-sm mb-2">{formatDate(post.createdAt)}</p>
+
+        {/* Rating */}
+        <div className="mb-6 pb-6 border-b border-border">
+          <StarRating contentType="blog" contentId={post.id} />
+        </div>
+
+        {/* Excerpt */}
+        <p className="text-lg text-muted-foreground leading-relaxed mb-6 italic border-l-4 border-primary pl-4">{post.excerpt}</p>
+
+        {/* Content */}
+        <div className="prose prose-sm max-w-none text-foreground leading-relaxed space-y-4">
+          {post.content.split('\n').filter(Boolean).map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+      </article>
+
+      <CommentSection contentType="blog" contentId={post.id} />
+    </div>
+  );
+}

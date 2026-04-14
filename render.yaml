@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: code-companion-web
+    env: node
+    plan: free
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm run render:build
+    startCommand: corepack enable && pnpm run render:start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: NODE_ENV
+        value: production
+      - key: BASE_PATH
+        value: /
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false

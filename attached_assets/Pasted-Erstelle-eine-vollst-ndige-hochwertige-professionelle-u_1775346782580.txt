@@ -1,0 +1,436 @@
+Erstelle eine **vollständige, hochwertige, professionelle und produktionsreife Webplattform** namens **„Meisterverbund“** für Österreich. Die Website soll optisch modern, vertrauenswürdig, schnell, responsiv und sauber strukturiert sein. Ziel ist eine Plattform für Meisterbetriebe, Inhalte, Community und Bewertungen.
+
+Das Projekt muss so gebaut werden, dass ich es nach Fertigstellung als **ZIP-Datei herunterladen** und anschließend selbst auf **Render** deployen kann.
+
+## Projektziel
+
+„Meisterverbund“ ist eine österreichische Plattform für Meisterbetriebe.
+Die Website soll:
+
+* öffentlich lesbare Inhalte bieten
+* Meisterbetriebe präsentieren
+* eine Community mit registrierten Benutzern ermöglichen
+* Kommentare und 1-bis-5-Sterne-Bewertungen erlauben
+* ein sicheres Admin-System haben, bei dem **nur ich als Admin** Inhalte und Moderation verwalte
+
+## Ganz wichtige Zugriffsregeln
+
+Diese Regeln müssen exakt umgesetzt werden:
+
+* **Jeder Besucher**, auch ohne Login, darf **alle veröffentlichten Blogbeiträge, Newsbeiträge und Werbebeiträge lesen**
+* **Nur registrierte und eingeloggte Benutzer mit Profil** dürfen:
+
+  * Kommentare schreiben
+  * eigene Kommentare bearbeiten
+  * eigene Kommentare löschen
+  * 1 bis 5 Sterne vergeben
+  * eigene Sternebewertung später ändern
+* **Nur ich als Admin** darf:
+
+  * Blogbeiträge erstellen, bearbeiten, löschen, veröffentlichen
+  * Newsbeiträge erstellen, bearbeiten, löschen, veröffentlichen
+  * Werbebeiträge erstellen, bearbeiten, löschen, veröffentlichen
+  * Kommentare moderieren oder löschen
+  * Bewertungen löschen oder ändern
+  * Benutzer sperren und entsperren
+  * Betriebe verwalten
+* Gesperrte Benutzer dürfen sich nicht normal einloggen oder dürfen zumindest keinerlei Kommentar- oder Bewertungsfunktionen verwenden
+* Nicht eingeloggte Besucher sollen bei Kommentar- oder Bewertungsversuchen freundlich auf Login oder Registrierung hingewiesen werden
+
+## Bevorzugter Tech-Stack
+
+Verwende einen modernen, gut wartbaren Stack:
+
+### Frontend
+
+* React
+* Vite
+* React Router
+* sauberes komponentenbasiertes Design
+* modernes UI
+* gute Ladezustände und Fehlermeldungen
+
+### Backend
+
+* Node.js
+* Express
+
+### Datenbank
+
+* PostgreSQL
+
+### ORM
+
+* Prisma ORM
+
+### Authentifizierung
+
+* sichere Authentifizierung mit JWT oder Sessions
+* Passwort-Hashing mit bcrypt
+* geschützte Admin-Routen
+* serverseitige Rollenprüfung
+
+### Styling
+
+Bevorzugt:
+
+* Tailwind CSS
+  oder alternativ sehr sauberes modernes CSS-System
+
+## Design-Anforderungen
+
+Das Design soll **hochwertig, seriös und modern** wirken. Es soll nicht nach Baukasten oder Schülerprojekt aussehen.
+
+### Stilrichtung
+
+* professionell
+* österreichische Handwerks- und Meisterbetriebe als Zielgruppe
+* vertrauenswürdig
+* klare Struktur
+* mobilfreundlich
+* übersichtlich
+* moderne Kartenlayouts
+* saubere Abstände
+* gute Typografie
+* hochwertige Startseite
+* modernes Admin-Dashboard
+
+### Visuelle Anforderungen
+
+* Hero-Bereich auf der Startseite
+* professionelle Header- und Footer-Struktur
+* Karten für Beiträge und Betriebe
+* Sternbewertung visuell ansprechend
+* Kommentarbereich modern gestaltet
+* klare Buttons und Formulare
+* schöne Hover-Effekte
+* responsive Navigation
+* mobil optimiert
+* leere Zustände, Ladezustände und Fehlermeldungen sauber darstellen
+
+## Seitenstruktur
+
+Erstelle folgende Seiten:
+
+### Öffentlich
+
+* Startseite
+* Über uns
+* Blog
+* Blog-Detailseite
+* News
+* News-Detailseite
+* Werbung / Angebote
+* Werbe-Detailseite
+* Meisterbetriebe / Verzeichnis
+* Betrieb-Detailseite
+* Kontakt
+* Impressum
+* Datenschutz
+* Login
+* Registrierung
+
+### Benutzerbereich
+
+* Profilseite
+* Meine Kommentare
+* Meine Bewertungen
+
+### Adminbereich
+
+* Admin Login-Schutz
+* Dashboard Übersicht
+* Beiträge verwalten
+* News verwalten
+* Werbung verwalten
+* Betriebe verwalten
+* Kommentare moderieren
+* Bewertungen verwalten
+* Benutzer verwalten
+
+## Startseite
+
+Die Startseite soll stark und hochwertig aufgebaut sein.
+
+Sie soll enthalten:
+
+* großen Hero-Bereich mit Titel „Meisterverbund“
+* Untertitel mit klarer Erklärung der Plattform
+* Call-to-Action Buttons
+* Bereich mit neuesten Blogbeiträgen
+* Bereich mit aktuellen News
+* Bereich mit hervorgehobenen Werbeeinträgen
+* Bereich mit ausgewählten Meisterbetrieben
+* Community-Hinweis zu Bewertungen und Kommentaren
+* seriösen Footer
+
+## Inhaltstypen
+
+Es gibt drei Hauptarten von Inhalten:
+
+1. Blog
+2. News
+3. Werbung / Angebote
+
+Jeder Inhaltstyp soll folgende Felder besitzen:
+
+* id
+* title
+* slug
+* excerpt / Kurzbeschreibung
+* content / vollständiger Inhalt
+* coverImage optional
+* category optional
+* published boolean
+* createdAt
+* updatedAt
+
+Zusätzlich soll man Beiträge in Listen und Detailansichten sauber darstellen.
+
+## Kommentare
+
+Kommentare sollen unter Blog- und News-Beiträgen möglich sein.
+
+Anforderungen:
+
+* nur für eingeloggte Benutzer mit Profil
+* Kommentar erstellen
+* eigenen Kommentar bearbeiten
+* eigenen Kommentar löschen
+* Admin kann jeden Kommentar löschen
+* bei gesperrten Benutzern keine Kommentarrechte
+* Kommentare mit Datum und Benutzername anzeigen
+* moderne Kommentaroberfläche
+
+## Bewertungen
+
+Bewertungen sollen mit **1 bis 5 Sternen** möglich sein.
+
+Anforderungen:
+
+* nur eingeloggte Benutzer
+* pro Benutzer nur eine Bewertung pro Inhalt oder Betrieb
+* Bewertung später änderbar
+* Durchschnittsbewertung anzeigen
+* Anzahl der Bewertungen anzeigen
+* Sterne visuell modern darstellen
+* Admin kann Bewertungen löschen oder ändern
+* gesperrte Benutzer dürfen nicht bewerten
+
+## Meisterbetriebe-Verzeichnis
+
+Erstelle ein Verzeichnis für Meisterbetriebe.
+
+Jeder Betrieb soll folgende Felder haben:
+
+* id
+* Firmenname
+* Slug
+* Bundesland
+* Stadt
+* Branche / Gewerbe
+* Beschreibung
+* Telefonnummer
+* E-Mail
+* Website
+* Logo oder Bild optional
+* erstellt am
+* aktualisiert am
+
+Öffentliche Funktionen:
+
+* Suche
+* Filter nach Bundesland
+* Filter nach Stadt
+* Filter nach Branche
+* Detailseite pro Betrieb
+* optional Sternebewertung für Betriebe
+
+## Admin-Dashboard
+
+Das Dashboard soll hochwertig und gut nutzbar sein.
+
+Es soll enthalten:
+
+* Übersichtskarten mit Kennzahlen
+
+  * Anzahl Benutzer
+  * Anzahl Blogbeiträge
+  * Anzahl Newsbeiträge
+  * Anzahl Werbebeiträge
+  * Anzahl Kommentare
+  * Anzahl Bewertungen
+  * Anzahl Betriebe
+* Seitenleiste oder Top-Navigation
+* schnelle Bearbeitung
+* Tabellenansichten
+* Formulare zum Erstellen und Bearbeiten
+* Löschbestätigung
+* Statusanzeigen für gesperrte Benutzer und veröffentlichte Inhalte
+
+## Benutzerverwaltung
+
+Admin muss Benutzer verwalten können.
+
+Funktionen:
+
+* Benutzerliste
+* Suche nach Benutzer
+* Status sehen
+* sperren
+* entsperren
+* Rolle anzeigen
+* keine versehentliche Selbstsperre
+* keine versehentliche Selbstlöschung
+* Benutzerprofil-Basisdaten einsehbar
+
+## Sicherheit
+
+Sehr wichtig:
+
+* sichere Passwort-Hashes
+* Input-Validierung serverseitig
+* sichere Auth-Middleware
+* Rollenprüfung auf jeder Admin-Route
+* keine offenen Admin-Endpunkte
+* Schutz vor einfachen XSS- und Injection-Problemen
+* sinnvolle Fehlerbehandlung
+* keine sensiblen Daten im Frontend
+* `.env`-Nutzung für Secrets
+* saubere Trennung von Frontend und Backend-Logik
+
+## Datenbankmodelle
+
+Erstelle sinnvolle Prisma-Modelle mindestens für:
+
+* User
+* BlogPost
+* NewsPost
+* AdPost
+* Comment
+* Rating
+* Business
+* optional Category
+
+### User-Felder mindestens
+
+* id
+* name
+* email
+* passwordHash
+* role
+* isBlocked
+* createdAt
+* updatedAt
+
+## Admin-Konto
+
+Beim ersten Start soll automatisch oder sehr einfach ein Admin-Konto erstellbar sein.
+
+Nutze ENV-Werte wie:
+
+* ADMIN_EMAIL
+* ADMIN_PASSWORD
+* ADMIN_NAME
+
+Erstelle dafür ein Seed-Script.
+
+Wichtig:
+
+* nur dieses Konto soll initial Admin-Rechte haben
+* alle anderen registrierten Benutzer sind normale User
+
+## SEO und Struktur
+
+Baue Basis-SEO ein:
+
+* saubere URLs mit Slugs
+* Meta Title
+* Meta Description
+* semantisches HTML
+* strukturierte Seitentitel
+* gute Headings
+
+## Developer Experience
+
+Das Projekt soll sauber strukturiert sein.
+
+Anforderungen:
+
+* klare Ordnerstruktur
+* wiederverwendbare Komponenten
+* saubere API-Struktur
+* leicht wartbar
+* keine unnötigen Demo-Dateien
+* gut lesbarer Code
+* sinnvolle Benennung
+* README mit genauer Erklärung
+
+## Render-Deployment
+
+Projekt muss für Render vorbereitet sein.
+
+Bitte erstelle:
+
+* korrektes Start-Script
+* korrektes Build-Script
+* `.env.example`
+* Prisma-Migrationen
+* klare Deployment-Anleitung für Render
+* Hinweise zur PostgreSQL-Datenbank auf Render
+* Hinweise zu ENV-Variablen
+* funktionierende Produktionskonfiguration
+
+## Seed-Daten
+
+Erstelle Seed-Daten für:
+
+* Admin-Konto
+* einige Beispiel-Blogbeiträge
+* einige News
+* einige Werbeeinträge
+* einige Beispiel-Meisterbetriebe
+
+## Zusätzliche Qualitätsanforderungen
+
+* Erstelle eine 404-Seite
+* Erstelle ein sauberes Fehlerhandling
+* Erstelle leere Zustände, wenn noch keine Beiträge oder Betriebe vorhanden sind
+* Formulare sollen validiert sein
+* Benutzerfreundliche Meldungen anzeigen
+* Ladeindikatoren einbauen
+* Projekt soll direkt praktisch nutzbar sein, nicht nur ein UI-Mockup oder Grundgerüst
+
+## Wichtiger Hinweis zur Umsetzung
+
+Die Anwendung muss **voll funktionsfähig** sein.
+Bitte kein halbfertiges Gerüst, sondern ein funktionierendes Projekt mit:
+
+* Frontend
+* Backend
+* Datenbankanbindung
+* Auth
+* Adminbereich
+* CRUD-Funktionen
+* Kommentaren
+* Bewertungen
+* Benutzerverwaltung
+
+## Ausgabe
+
+Gib mir das vollständige Projekt mit:
+
+* kompletter Ordnerstruktur
+* vollständigem Code
+* `README.md`
+* `.env.example`
+* Prisma-Schema
+* Seed-Script
+* klarer Anleitung:
+
+  1. lokal starten
+  2. testen
+  3. als ZIP herunterladen
+  4. auf Render deployen
+
+Baue das Projekt so, dass es hochwertig aussieht und realistisch für einen produktiven Start verwendbar ist.

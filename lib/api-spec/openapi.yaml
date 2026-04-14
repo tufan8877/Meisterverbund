@@ -1,0 +1,1631 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Meisterverbund API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication
+  - name: users
+    description: User management
+  - name: blog
+    description: Blog posts
+  - name: news
+    description: News posts
+  - name: ads
+    description: Advertisement posts
+  - name: businesses
+    description: Meisterbetriebe directory
+  - name: comments
+    description: Comments
+  - name: ratings
+    description: Star ratings
+  - name: admin
+    description: Admin operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # AUTH
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # USERS
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users (admin only)
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersListResponse"
+
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user by ID (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/{id}/block:
+    patch:
+      operationId: blockUser
+      tags: [users]
+      summary: Block a user (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}/unblock:
+    patch:
+      operationId: unblockUser
+      tags: [users]
+      summary: Unblock a user (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/profile:
+    patch:
+      operationId: updateProfile
+      tags: [users]
+      summary: Update own profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # BLOG
+  /blog:
+    get:
+      operationId: listBlogPosts
+      tags: [blog]
+      summary: List published blog posts
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPostsListResponse"
+    post:
+      operationId: createBlogPost
+      tags: [blog]
+      summary: Create blog post (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+
+  /blog/all:
+    get:
+      operationId: listAllBlogPosts
+      tags: [blog]
+      summary: List all blog posts including unpublished (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPostsListResponse"
+
+  /blog/{slug}:
+    get:
+      operationId: getBlogPost
+      tags: [blog]
+      summary: Get blog post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateBlogPost
+      tags: [blog]
+      summary: Update blog post (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+    delete:
+      operationId: deleteBlogPost
+      tags: [blog]
+      summary: Delete blog post (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # NEWS
+  /news:
+    get:
+      operationId: listNewsPosts
+      tags: [news]
+      summary: List published news posts
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsPostsListResponse"
+    post:
+      operationId: createNewsPost
+      tags: [news]
+      summary: Create news post (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsPost"
+
+  /news/all:
+    get:
+      operationId: listAllNewsPosts
+      tags: [news]
+      summary: List all news posts including unpublished (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsPostsListResponse"
+
+  /news/{slug}:
+    get:
+      operationId: getNewsPost
+      tags: [news]
+      summary: Get news post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsPost"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateNewsPost
+      tags: [news]
+      summary: Update news post (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsPost"
+    delete:
+      operationId: deleteNewsPost
+      tags: [news]
+      summary: Delete news post (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # ADS
+  /ads:
+    get:
+      operationId: listAdPosts
+      tags: [ads]
+      summary: List published advertisement posts
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdPostsListResponse"
+    post:
+      operationId: createAdPost
+      tags: [ads]
+      summary: Create ad post (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdPost"
+
+  /ads/all:
+    get:
+      operationId: listAllAdPosts
+      tags: [ads]
+      summary: List all ad posts including unpublished (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdPostsListResponse"
+
+  /ads/{slug}:
+    get:
+      operationId: getAdPost
+      tags: [ads]
+      summary: Get ad post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdPost"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateAdPost
+      tags: [ads]
+      summary: Update ad post (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdPost"
+    delete:
+      operationId: deleteAdPost
+      tags: [ads]
+      summary: Delete ad post (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # BUSINESSES
+  /businesses/featured:
+    get:
+      operationId: listFeaturedBusinesses
+      tags: [businesses]
+      summary: List featured businesses of the month
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  businesses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Business"
+                  label:
+                    type: string
+                required:
+                  - businesses
+
+  /businesses:
+    get:
+      operationId: listBusinesses
+      tags: [businesses]
+      summary: List businesses
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: bundesland
+          in: query
+          schema:
+            type: string
+        - name: branche
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessesListResponse"
+    post:
+      operationId: createBusiness
+      tags: [businesses]
+      summary: Create business (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBusinessBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+
+  /businesses/{slug}:
+    get:
+      operationId: getBusiness
+      tags: [businesses]
+      summary: Get business by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateBusiness
+      tags: [businesses]
+      summary: Update business (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBusinessBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+    delete:
+      operationId: deleteBusiness
+      tags: [businesses]
+      summary: Delete business (admin)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # COMMENTS
+  /comments:
+    get:
+      operationId: listComments
+      tags: [comments]
+      summary: List comments by content type and ID
+      parameters:
+        - name: contentType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [blog, news, ad, business]
+        - name: contentId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentsListResponse"
+    post:
+      operationId: createComment
+      tags: [comments]
+      summary: Create comment (logged in users)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommentBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+
+  /comments/all:
+    get:
+      operationId: listAllComments
+      tags: [comments]
+      summary: List all comments (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentsListResponse"
+
+  /comments/{id}:
+    patch:
+      operationId: updateComment
+      tags: [comments]
+      summary: Update own comment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCommentBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+    delete:
+      operationId: deleteComment
+      tags: [comments]
+      summary: Delete comment (own or admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # RATINGS
+  /ratings:
+    get:
+      operationId: getRating
+      tags: [ratings]
+      summary: Get rating summary for content
+      parameters:
+        - name: contentType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [blog, news, ad, business]
+        - name: contentId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingSummary"
+    post:
+      operationId: createOrUpdateRating
+      tags: [ratings]
+      summary: Create or update rating (logged in users)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRatingBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+
+  /ratings/user:
+    get:
+      operationId: getUserRating
+      tags: [ratings]
+      summary: Get user's own rating for content
+      parameters:
+        - name: contentType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [blog, news, ad, business]
+        - name: contentId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "404":
+          description: Not rated yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /ratings/all:
+    get:
+      operationId: listAllRatings
+      tags: [ratings]
+      summary: List all ratings (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingsListResponse"
+
+  /ratings/{id}:
+    delete:
+      operationId: deleteRating
+      tags: [ratings]
+      summary: Delete rating (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ADMIN - DASHBOARD STATS
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get admin dashboard statistics
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    # AUTH
+    RegisterBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - email
+        - password
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required:
+        - user
+        - token
+
+    # USER
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        isBlocked:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - role
+        - isBlocked
+        - createdAt
+        - updatedAt
+
+    UsersListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - users
+        - total
+        - page
+        - totalPages
+
+    UpdateProfileBody:
+      type: object
+      properties:
+        name:
+          type: string
+
+    # POSTS (shared structure)
+    CreatePostBody:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        published:
+          type: boolean
+      required:
+        - title
+        - slug
+        - excerpt
+        - content
+
+    UpdatePostBody:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        published:
+          type: boolean
+
+    # BLOG
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        published:
+          type: boolean
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        commentCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - title
+        - slug
+        - excerpt
+        - content
+        - published
+        - ratingCount
+        - commentCount
+        - createdAt
+        - updatedAt
+
+    BlogPostsListResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/BlogPost"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - posts
+        - total
+        - page
+        - totalPages
+
+    # NEWS
+    NewsPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        published:
+          type: boolean
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        commentCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - title
+        - slug
+        - excerpt
+        - content
+        - published
+        - ratingCount
+        - commentCount
+        - createdAt
+        - updatedAt
+
+    NewsPostsListResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsPost"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - posts
+        - total
+        - page
+        - totalPages
+
+    # ADS
+    AdPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        published:
+          type: boolean
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        commentCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - title
+        - slug
+        - excerpt
+        - content
+        - published
+        - ratingCount
+        - commentCount
+        - createdAt
+        - updatedAt
+
+    AdPostsListResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdPost"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - posts
+        - total
+        - page
+        - totalPages
+
+    # BUSINESSES
+    CreateBusinessBody:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        bundesland:
+          type: string
+        stadt:
+          type: string
+        branche:
+          type: string
+        description:
+          type: string
+        telefon:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        logo:
+          type: ["string", "null"]
+      required:
+        - name
+        - slug
+        - bundesland
+        - stadt
+        - branche
+        - description
+
+    UpdateBusinessBody:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        bundesland:
+          type: string
+        stadt:
+          type: string
+        branche:
+          type: string
+        description:
+          type: string
+        telefon:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        logo:
+          type: ["string", "null"]
+        isFeatured:
+          type: boolean
+        featuredLabel:
+          type: ["string", "null"]
+
+    Business:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        bundesland:
+          type: string
+        stadt:
+          type: string
+        branche:
+          type: string
+        description:
+          type: string
+        telefon:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        logo:
+          type: ["string", "null"]
+        isFeatured:
+          type: boolean
+        featuredLabel:
+          type: ["string", "null"]
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - bundesland
+        - stadt
+        - branche
+        - description
+        - isFeatured
+        - ratingCount
+        - createdAt
+        - updatedAt
+
+    BusinessesListResponse:
+      type: object
+      properties:
+        businesses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Business"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - businesses
+        - total
+        - page
+        - totalPages
+
+    # COMMENTS
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        contentType:
+          type: string
+        contentId:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - content
+        - contentType
+        - contentId
+        - userId
+        - userName
+        - createdAt
+        - updatedAt
+
+    CommentsListResponse:
+      type: object
+      properties:
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - comments
+        - total
+        - page
+        - totalPages
+
+    CreateCommentBody:
+      type: object
+      properties:
+        content:
+          type: string
+        contentType:
+          type: string
+          enum: [blog, news, ad, business]
+        contentId:
+          type: integer
+      required:
+        - content
+        - contentType
+        - contentId
+
+    UpdateCommentBody:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
+
+    # RATINGS
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+        stars:
+          type: integer
+        contentType:
+          type: string
+        contentId:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - stars
+        - contentType
+        - contentId
+        - userId
+        - userName
+        - createdAt
+
+    RatingSummary:
+      type: object
+      properties:
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        userRating:
+          type: ["integer", "null"]
+      required:
+        - ratingCount
+
+    RatingsListResponse:
+      type: object
+      properties:
+        ratings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rating"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - ratings
+        - total
+        - page
+        - totalPages
+
+    CreateRatingBody:
+      type: object
+      properties:
+        stars:
+          type: integer
+        contentType:
+          type: string
+          enum: [blog, news, ad, business]
+        contentId:
+          type: integer
+      required:
+        - stars
+        - contentType
+        - contentId
+
+    # ADMIN STATS
+    AdminStats:
+      type: object
+      properties:
+        userCount:
+          type: integer
+        blogCount:
+          type: integer
+        newsCount:
+          type: integer
+        adCount:
+          type: integer
+        commentCount:
+          type: integer
+        ratingCount:
+          type: integer
+        businessCount:
+          type: integer
+        blockedUserCount:
+          type: integer
+      required:
+        - userCount
+        - blogCount
+        - newsCount
+        - adCount
+        - commentCount
+        - ratingCount
+        - businessCount
+        - blockedUserCount
