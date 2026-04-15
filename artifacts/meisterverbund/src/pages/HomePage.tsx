@@ -1,5 +1,9 @@
 import { Link } from "wouter";
-import { useListBlogPosts, useListBusinesses, useListFeaturedBusinesses } from "@workspace/api-client-react";
+import {
+  useListBlogPosts,
+  useListBusinesses,
+  useListFeaturedBusinesses,
+} from "@workspace/api-client-react";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("de-AT", {
@@ -17,27 +21,67 @@ export function HomePage() {
   const featuredBusinesses = featuredData?.businesses ?? [];
   const featuredLabel = featuredData?.label ?? "April 2026";
 
+  const fallbackFeaturedBusinesses = [
+    {
+      id: "1",
+      slug: "tischlerei-huber-gmbh",
+      name: "Tischlerei Huber GmbH",
+      branche: "Tischlerei",
+      stadt: "Wien",
+      bundesland: "Wien",
+      description:
+        "Traditionelle Tischlerei in Wien seit 1978. Maßmöbel, Einbauküchen und historische Restaurierungen.",
+    },
+    {
+      id: "2",
+      slug: "malerei-kirchner-kg",
+      name: "Malerei Kirchner KG",
+      branche: "Malerei & Anstrich",
+      stadt: "Graz",
+      bundesland: "Steiermark",
+      description:
+        "Malerei und Anstricharbeiten auf höchstem Niveau seit über 20 Jahren in Graz und der Steiermark.",
+    },
+    {
+      id: "3",
+      slug: "baeckerei-meister-gruber",
+      name: "Bäckerei Meister Gruber",
+      branche: "Bäckerei",
+      stadt: "Salzburg",
+      bundesland: "Salzburg",
+      description:
+        "Traditionelle Bäckerei im Herzen von Salzburg. Täglich frisches Brot und Gebäck nach Meisterhand.",
+    },
+  ];
+
+  const monthBusinesses =
+    featuredBusinesses.length > 0
+      ? featuredBusinesses.slice(0, 3)
+      : fallbackFeaturedBusinesses;
+
   return (
     <div>
-      <section className="bg-primary text-primary-foreground py-16 sm:py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-5">
-            Finden Sie qualifizierte Handwerksmeister in Ihrer Nähe. Lesen Sie
-            <br className="hidden sm:block" />
-            Fachbeiträge, aktuelle News und entdecken Sie Angebote aus der Branche.
+      <section className="bg-primary text-primary-foreground px-4 py-14 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-5xl text-center">
+          <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-[1.2] sm:text-4xl md:text-5xl lg:text-6xl">
+            Finden Sie qualifizierte Handwerksmeister in Ihrer Nähe.
           </h1>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
+          <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-primary-foreground/85 sm:text-lg md:text-xl">
+            Lesen Sie Fachbeiträge, aktuelle News und entdecken Sie Angebote aus der Branche.
+          </p>
+
+          <div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
             <Link
               href="/betriebe"
-              className="w-full sm:w-auto px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:bg-accent/90 transition-colors"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-accent px-6 py-3.5 text-base font-semibold text-accent-foreground transition-colors hover:bg-accent/90 sm:w-auto"
             >
               Betriebe finden
             </Link>
 
             <Link
               href="/kontakt"
-              className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-semibold transition-colors"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-white/12 px-6 py-3.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-white/20 sm:w-auto"
             >
               Jetzt kontaktieren
             </Link>
@@ -45,8 +89,8 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {[
             {
               icon: "★",
@@ -64,20 +108,23 @@ export function HomePage() {
               desc: "Lesen Sie echte Erfahrungen anderer Kunden und hinterlassen Sie Ihre eigene Bewertung.",
             },
           ].map((feature) => (
-            <div key={feature.title} className="bg-card border border-card-border rounded-2xl p-6 shadow-sm">
-              <div className="text-2xl text-accent mb-4">{feature.icon}</div>
-              <h3 className="font-bold text-xl mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{feature.desc}</p>
+            <div
+              key={feature.title}
+              className="rounded-2xl border border-card-border bg-card p-6 shadow-sm"
+            >
+              <div className="mb-4 text-2xl text-accent">{feature.icon}</div>
+              <h3 className="mb-2 text-xl font-bold">{feature.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{feature.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
                 Meisterbetriebe des Monats
               </h2>
 
@@ -91,13 +138,16 @@ export function HomePage() {
             </p>
           </div>
 
-          <Link href="/betriebe" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/betriebe"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
             Alle Betriebe
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {(featuredBusinesses.length > 0 ? featuredBusinesses.slice(0, 3) : []).map((biz, index) => (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {monthBusinesses.map((biz, index) => (
             <Link key={biz.id} href={`/betriebe/${biz.slug}`} className="block">
               <div className="rounded-2xl border border-[#e7e7e7] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition hover:shadow-[0_6px_18px_rgba(0,0,0,0.06)]">
                 <div className="flex items-start gap-4">
@@ -108,7 +158,7 @@ export function HomePage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <h3 className="truncate text-lg sm:text-xl font-bold leading-tight text-foreground">
+                        <h3 className="truncate text-lg font-bold leading-tight text-foreground sm:text-xl">
                           {biz.name}
                         </h3>
                         <p className="text-sm text-muted-foreground">{biz.branche}</p>
@@ -125,9 +175,9 @@ export function HomePage() {
                     </div>
 
                     <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                      {biz.description && biz.description.length > 95
-                        ? `${biz.description.slice(0, 95)}...`
-                        : biz.description || "Ausgezeichneter Meisterbetrieb mit Qualität, Erfahrung und regionaler Kompetenz."}
+                      {biz.description && biz.description.length > 110
+                        ? `${biz.description.slice(0, 110)}...`
+                        : biz.description}
                     </p>
 
                     <div className="mt-5">
@@ -140,129 +190,62 @@ export function HomePage() {
               </div>
             </Link>
           ))}
-
-          {featuredBusinesses.length === 0 &&
-            [
-              {
-                id: "1",
-                slug: "tischlerei-huber-gmbh",
-                name: "Tischlerei Huber GmbH",
-                branche: "Tischlerei",
-                stadt: "Wien",
-                bundesland: "Wien",
-                description: "Traditionelle Tischlerei in Wien seit 1978. Maßmöbel, Einbauküchen und historische Restaurierungen.",
-              },
-              {
-                id: "2",
-                slug: "malerei-kirchner-kg",
-                name: "Malerei Kirchner KG",
-                branche: "Malerei & Anstrich",
-                stadt: "Graz",
-                bundesland: "Steiermark",
-                description: "Malerei und Anstricharbeiten auf höchstem Niveau seit über 20 Jahren in Graz und der Steiermark.",
-              },
-              {
-                id: "3",
-                slug: "baeckerei-meister-gruber",
-                name: "Bäckerei Meister Gruber",
-                branche: "Bäckerei",
-                stadt: "Salzburg",
-                bundesland: "Salzburg",
-                description: "Traditionelle Bäckerei im Herzen von Salzburg. Täglich frisches Brot und Gebäck nach Meisterhand.",
-              },
-            ].map((biz, index) => (
-              <Link key={biz.id} href={`/betriebe/${biz.slug}`} className="block">
-                <div className="rounded-2xl border border-[#e7e7e7] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition hover:shadow-[0_6px_18px_rgba(0,0,0,0.06)]">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#e7efea] text-[28px] font-bold text-[#527061]">
-                      {biz.name.charAt(0).toUpperCase()}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <h3 className="truncate text-lg sm:text-xl font-bold leading-tight text-foreground">
-                            {biz.name}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">{biz.branche}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {biz.stadt}, {biz.bundesland}
-                          </p>
-                        </div>
-
-                        {index === 0 && (
-                          <span className="inline-flex shrink-0 items-center rounded-md bg-accent px-2 py-1 text-xs font-bold text-accent-foreground">
-                            Nr. 1
-                          </span>
-                        )}
-                      </div>
-
-                      <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                        {biz.description}
-                      </p>
-
-                      <div className="mt-5">
-                        <span className="inline-flex items-center rounded-md bg-accent px-2.5 py-1 text-xs font-bold text-accent-foreground">
-                          Betrieb des Monats
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
         </div>
       </section>
 
       <section className="bg-secondary/30 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between mb-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-8 flex items-center justify-between">
             <h2 className="text-2xl font-bold">Aktuelle Blog-Beiträge</h2>
-            <Link href="/blog" className="text-primary text-sm font-medium hover:underline">
+            <Link href="/blog" className="text-sm font-medium text-primary hover:underline">
               Alle Beiträge
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {blogData?.posts?.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`} className="group">
-                <div className="bg-card border border-card-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div className="overflow-hidden rounded-xl border border-card-border bg-card shadow-sm transition-shadow hover:shadow-md">
                   <div className="p-5">
-                    <span className="inline-block px-2 py-0.5 bg-primary/10 text-primary text-xs rounded font-medium mb-3">
+                    <span className="mb-3 inline-block rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                       {post.category}
                     </span>
 
-                    <h3 className="font-bold text-base mb-2 group-hover:text-primary transition-colors leading-tight">
+                    <h3 className="mb-2 text-base font-bold leading-tight transition-colors group-hover:text-primary">
                       {post.title}
                     </h3>
 
-                    <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{post.excerpt}</p>
+                    <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
+                      {post.excerpt}
+                    </p>
                     <p className="text-xs text-muted-foreground">{formatDate(post.createdAt)}</p>
                   </div>
                 </div>
               </Link>
-            )) ?? (
+            )) ??
               Array.from({ length: 3 }, (_, i) => (
-                <div key={i} className="bg-card border border-card-border rounded-xl p-5 animate-pulse">
-                  <div className="h-4 bg-muted rounded w-1/3 mb-3"></div>
-                  <div className="h-5 bg-muted rounded mb-2"></div>
-                  <div className="h-4 bg-muted rounded w-4/5"></div>
+                <div
+                  key={i}
+                  className="animate-pulse rounded-xl border border-card-border bg-card p-5"
+                >
+                  <div className="mb-3 h-4 w-1/3 rounded bg-muted"></div>
+                  <div className="mb-2 h-5 rounded bg-muted"></div>
+                  <div className="h-4 w-4/5 rounded bg-muted"></div>
                 </div>
-              ))
-            )}
+              ))}
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="flex items-center justify-between mb-8">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div className="mb-8 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Alle Meisterbetriebe</h2>
-          <Link href="/betriebe" className="text-primary text-sm font-medium hover:underline">
+          <Link href="/betriebe" className="text-sm font-medium text-primary hover:underline">
             Alle Betriebe
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {bizData?.businesses?.map((biz) => (
             <Link key={biz.id} href={`/betriebe/${biz.slug}`} className="block">
               <div className="rounded-2xl border border-[#e7e7e7] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition hover:shadow-[0_6px_18px_rgba(0,0,0,0.06)]">
@@ -272,7 +255,9 @@ export function HomePage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="truncate text-lg font-bold leading-tight text-foreground">{biz.name}</h3>
+                    <h3 className="truncate text-lg font-bold leading-tight text-foreground">
+                      {biz.name}
+                    </h3>
                     <p className="text-sm text-muted-foreground">{biz.branche}</p>
                     <p className="text-sm text-muted-foreground">
                       {biz.stadt}, {biz.bundesland}
@@ -285,13 +270,13 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="bg-accent py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-accent-foreground mb-4">
+      <section className="bg-accent px-4 py-16">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="mb-4 text-3xl font-extrabold text-accent-foreground sm:text-4xl">
             Sind Sie ein Meisterbetrieb?
           </h2>
 
-          <p className="text-lg sm:text-xl leading-relaxed text-accent-foreground/90 mb-8">
+          <p className="mb-8 text-lg leading-relaxed text-accent-foreground/90 sm:text-xl">
             Melden Sie sich bei uns für einen Beitrag über Ihr Unternehmen.
           </p>
 
@@ -304,39 +289,71 @@ export function HomePage() {
         </div>
       </section>
 
-      <footer className="bg-primary text-primary-foreground pt-14 pb-8 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+      <footer className="bg-primary px-4 pb-8 pt-14 text-primary-foreground">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-3">
           <div>
-            <div className="text-3xl font-extrabold mb-4">
+            <div className="mb-4 text-3xl font-extrabold">
               <span className="text-accent">M</span>eisterverbund
             </div>
-            <p className="text-primary-foreground/80 leading-7">
-              Die Plattform für österreichische Meisterbetriebe. Qualität, Vertrauen und Gemeinschaft seit der Gründung.
+            <p className="leading-7 text-primary-foreground/80">
+              Die Plattform für österreichische Meisterbetriebe. Qualität, Vertrauen und
+              Gemeinschaft seit der Gründung.
             </p>
           </div>
 
           <div>
-            <h3 className="font-bold text-xl mb-4 uppercase tracking-wide">Inhalte</h3>
+            <h3 className="mb-4 text-xl font-bold uppercase tracking-wide">Inhalte</h3>
             <div className="space-y-2">
-              <Link href="/blog" className="block text-primary-foreground/80 hover:text-white">Blog</Link>
-              <Link href="/news" className="block text-primary-foreground/80 hover:text-white">News</Link>
-              <Link href="/angebote" className="block text-primary-foreground/80 hover:text-white">Angebote</Link>
-              <Link href="/betriebe" className="block text-primary-foreground/80 hover:text-white">Betriebe</Link>
+              <Link href="/blog" className="block text-primary-foreground/80 hover:text-white">
+                Blog
+              </Link>
+              <Link href="/news" className="block text-primary-foreground/80 hover:text-white">
+                News
+              </Link>
+              <Link
+                href="/angebote"
+                className="block text-primary-foreground/80 hover:text-white"
+              >
+                Angebote
+              </Link>
+              <Link
+                href="/betriebe"
+                className="block text-primary-foreground/80 hover:text-white"
+              >
+                Betriebe
+              </Link>
             </div>
           </div>
 
           <div>
-            <h3 className="font-bold text-xl mb-4 uppercase tracking-wide">Rechtliches</h3>
+            <h3 className="mb-4 text-xl font-bold uppercase tracking-wide">Rechtliches</h3>
             <div className="space-y-2">
-              <Link href="/ueber-uns" className="block text-primary-foreground/80 hover:text-white">Über uns</Link>
-              <Link href="/kontakt" className="block text-primary-foreground/80 hover:text-white">Kontakt</Link>
-              <Link href="/impressum" className="block text-primary-foreground/80 hover:text-white">Impressum</Link>
-              <Link href="/datenschutz" className="block text-primary-foreground/80 hover:text-white">Datenschutz</Link>
+              <Link
+                href="/ueber-uns"
+                className="block text-primary-foreground/80 hover:text-white"
+              >
+                Über uns
+              </Link>
+              <Link href="/kontakt" className="block text-primary-foreground/80 hover:text-white">
+                Kontakt
+              </Link>
+              <Link
+                href="/impressum"
+                className="block text-primary-foreground/80 hover:text-white"
+              >
+                Impressum
+              </Link>
+              <Link
+                href="/datenschutz"
+                className="block text-primary-foreground/80 hover:text-white"
+              >
+                Datenschutz
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-10 border-t border-white/10 pt-6 text-center text-sm text-primary-foreground/70">
+        <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-center text-sm text-primary-foreground/70">
           © 2026 Meisterverbund. Alle Rechte vorbehalten.
         </div>
       </footer>
