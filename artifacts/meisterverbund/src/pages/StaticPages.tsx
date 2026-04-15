@@ -4,7 +4,7 @@ export function UeberUnsPage() {
       <h1 className="text-3xl font-bold mb-6">Über uns</h1>
       <div className="prose prose-sm max-w-none space-y-4 text-foreground/90 leading-relaxed">
         <p>
-          Meisterverbund ist die führende Plattform für österreichische Handwerksmeister. 
+          Meisterverbund ist die führende Plattform für österreichische Meisterbetriebe. 
           Wir verbinden qualifizierte Meisterbetriebe mit Kunden, die auf der Suche nach 
           hochwertigem Handwerk sind.
         </p>
@@ -39,11 +39,11 @@ export function KontaktPage() {
         <div className="space-y-4">
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">E-Mail</p>
-            <a href="mailto:info@meisterverbund.at" className="text-primary hover:underline">info@meisterverbund.at</a>
+            <a href="mailto:info@meisterverbund.at" className="text-primary hover:underline">office@meisterverbund.at</a>
           </div>
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Adresse</p>
-            <p className="text-sm">Meisterverbund GmbH<br />Handwerksgasse 1<br />1010 Wien, Österreich</p>
+            <p className="text-sm">Meisterverbund <br />Heiligenstädter Straße 152<br />1190 Wien, Österreich</p>
           </div>
         </div>
       </div>
@@ -77,13 +77,13 @@ export function ImpressumPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
       <h1 className="text-3xl font-bold mb-6">Impressum</h1>
       <div className="prose prose-sm max-w-none text-foreground/90 space-y-3 leading-relaxed">
-        <p><strong>Meisterverbund GmbH</strong></p>
-        <p>Handwerksgasse 1, 1010 Wien, Österreich</p>
+        <p><strong>Meisterverbund </strong></p>
+        <p>Heiligenstädter Straße 152, 1190 Wien, Österreich</p>
         <p>Registergericht: Handelsgericht Wien</p>
         <p>Firmenbuchnummer: FN 123456 x</p>
         <p>UID: ATU12345678</p>
         <p>Geschäftsführer: Max Mustermann</p>
-        <p>E-Mail: <a href="mailto:info@meisterverbund.at" className="text-primary">info@meisterverbund.at</a></p>
+        <p>E-Mail: <a href="mailto:office@meisterverbund.at" className="text-primary">office@meisterverbund.at</a></p>
       </div>
     </div>
   );
