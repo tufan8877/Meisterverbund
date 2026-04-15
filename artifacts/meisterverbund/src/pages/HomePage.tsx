@@ -296,7 +296,7 @@ export function HomePage() {
               <span className="text-accent">M</span>eisterverbund
             </div>
             <p className="leading-7 text-primary-foreground/80">
-              Die Plattform für österreichische Meisterbetriebe. Qualität, Vertrauen und
+              Qualität, Vertrauen und
               Gemeinschaft seit der Gründung.
             </p>
           </div>
