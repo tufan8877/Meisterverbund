@@ -64,7 +64,7 @@ export function HomePage() {
       <section className="bg-primary text-primary-foreground px-4 py-14 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-5xl text-center">
           <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-[1.2] sm:text-4xl md:text-5xl lg:text-6xl">
-            Finden Sie qualifizierte Handwerksmeister in Ihrer Nähe.
+            Finden Sie qualifizierte Meisterbetriebe in Ihrer Nähe.
           </h1>
 
           <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-primary-foreground/85 sm:text-lg md:text-xl">
