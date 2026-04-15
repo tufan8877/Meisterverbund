@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLogout } from "@workspace/api-client-react";
 
 export function Header() {
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const logoutMutation = useLogout();
   const [menuOpen, setMenuOpen] = useState(false);
   const [location] = useLocation();
@@ -12,6 +12,7 @@ export function Header() {
   function handleLogout() {
     logoutMutation.mutate({});
     logout();
+    setMenuOpen(false);
   }
 
   const navLinks = [
@@ -24,159 +25,187 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="font-extrabold text-xl tracking-tight hover:opacity-90 transition-opacity">
-            <span className="text-accent">M</span>eisterverbund
+    <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex min-h-[82px] items-center justify-between py-3">
+          <Link href="/" className="shrink-0 transition-opacity hover:opacity-90">
+            <div className="flex flex-col leading-none">
+              <span className="text-[28px] font-extrabold tracking-tight sm:text-[34px] lg:text-[38px]">
+                <span className="text-accent">M</span>eisterverbund
+              </span>
+              <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-primary-foreground/80 sm:text-[11px] lg:text-xs">
+                Plattform für österreichische Meisterbetriebe 🇦🇹
+              </span>
+            </div>
           </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white/10 ${location.startsWith(link.href) ? "bg-white/15" : ""}`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = location === link.href || location.startsWith(`${link.href}/`);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10 ${
+                    active ? "bg-white/15" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Auth buttons */}
           <div className="hidden lg:flex items-center gap-2">
             {isAuthenticated ? (
               <>
                 {isAdmin && (
-                  <Link href="/admin" className="px-3 py-1.5 rounded-md text-sm font-medium bg-accent text-accent-foreground hover:bg-accent/90 transition-colors">
+                  <Link
+                    href="/admin"
+                    className="rounded-md bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
+                  >
                     Admin
                   </Link>
                 )}
-                <Link href="/profil" className="px-3 py-1.5 rounded-md text-sm font-medium bg-white/10 hover:bg-white/20 transition-colors">
-                  {user?.name}
+
+                <Link
+                  href="/profil"
+                  className="rounded-md bg-white/10 px-3 py-2 text-sm font-medium transition-colors hover:bg-white/20"
+                >
+                  Profil
                 </Link>
+
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-1.5 rounded-md text-sm font-medium bg-white/10 hover:bg-white/20 transition-colors"
+                  className="rounded-md bg-white/10 px-3 py-2 text-sm font-medium transition-colors hover:bg-white/20"
                 >
                   Abmelden
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="px-3 py-1.5 rounded-md text-sm font-medium bg-white/10 hover:bg-white/20 transition-colors">
+                <Link
+                  href="/anmelden"
+                  className="rounded-md bg-white/10 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/20"
+                >
                   Anmelden
                 </Link>
-                <Link href="/register" className="px-3 py-1.5 rounded-md text-sm font-medium bg-accent text-accent-foreground hover:bg-accent/90 transition-colors">
+
+                <Link
+                  href="/registrieren"
+                  className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
+                >
                   Registrieren
                 </Link>
               </>
             )}
           </div>
 
-          {/* Mobile menu button */}
           <button
-            className="lg:hidden p-2 rounded-md hover:bg-white/10 transition-colors"
-            onClick={() => setMenuOpen(!menuOpen)}
+            type="button"
+            aria-label="Menü öffnen"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg lg:hidden hover:bg-white/10"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen
-                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              }
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+              )}
             </svg>
           </button>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div className="lg:hidden pb-4 border-t border-white/10 pt-3 space-y-1">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-2 border-t border-white/10 space-y-1">
+      {menuOpen && (
+        <div className="border-t border-white/10 bg-primary lg:hidden">
+          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+            <nav className="flex flex-col gap-2">
+              {navLinks.map((link) => {
+                const active = location === link.href || location.startsWith(`${link.href}/`);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-white/10 ${
+                      active ? "bg-white/15" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="mt-4 flex flex-col gap-2">
               {isAuthenticated ? (
                 <>
                   {isAdmin && (
-                    <Link href="/admin" className="block px-3 py-2 rounded-md text-sm font-medium bg-accent/20" onClick={() => setMenuOpen(false)}>
-                      Admin-Bereich
+                    <Link
+                      href="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
+                    >
+                      Admin
                     </Link>
                   )}
-                  <Link href="/profil" className="block px-3 py-2 rounded-md text-sm hover:bg-white/10" onClick={() => setMenuOpen(false)}>
-                    Mein Profil ({user?.name})
+
+                  <Link
+                    href="/profil"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg bg-white/10 px-4 py-3 text-center text-sm font-medium transition-colors hover:bg-white/20"
+                  >
+                    Profil
                   </Link>
-                  <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-sm hover:bg-white/10">
+
+                  <button
+                    onClick={handleLogout}
+                    className="rounded-lg bg-white/10 px-4 py-3 text-sm font-medium transition-colors hover:bg-white/20"
+                  >
                     Abmelden
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="block px-3 py-2 rounded-md text-sm hover:bg-white/10" onClick={() => setMenuOpen(false)}>Anmelden</Link>
-                  <Link href="/register" className="block px-3 py-2 rounded-md text-sm bg-accent/20" onClick={() => setMenuOpen(false)}>Registrieren</Link>
+                  <Link
+                    href="/anmelden"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg bg-white/10 px-4 py-3 text-center text-sm font-medium transition-colors hover:bg-white/20"
+                  >
+                    Anmelden
+                  </Link>
+
+                  <Link
+                    href="/registrieren"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
+                  >
+                    Registrieren
+                  </Link>
                 </>
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 }
 
-export function Footer() {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <footer className="bg-foreground text-primary-foreground mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
-            <div className="font-extrabold text-xl mb-3">
-              <span className="text-accent">M</span>eisterverbund
-            </div>
-            <p className="text-sm text-primary-foreground/70 leading-relaxed">
-              Die Plattform für österreichische Meisterbetriebe. Qualität, Vertrauen und Gemeinschaft seit der Gründung.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider mb-3 text-primary-foreground/60">Inhalte</h3>
-            <ul className="space-y-2 text-sm text-primary-foreground/80">
-              <li><Link href="/blog" className="hover:text-accent transition-colors">Blog</Link></li>
-              <li><Link href="/news" className="hover:text-accent transition-colors">News</Link></li>
-              <li><Link href="/angebote" className="hover:text-accent transition-colors">Angebote</Link></li>
-              <li><Link href="/betriebe" className="hover:text-accent transition-colors">Betriebe</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider mb-3 text-primary-foreground/60">Rechtliches</h3>
-            <ul className="space-y-2 text-sm text-primary-foreground/80">
-              <li><Link href="/ueber-uns" className="hover:text-accent transition-colors">Über uns</Link></li>
-              <li><Link href="/kontakt" className="hover:text-accent transition-colors">Kontakt</Link></li>
-              <li><Link href="/impressum" className="hover:text-accent transition-colors">Impressum</Link></li>
-              <li><Link href="/datenschutz" className="hover:text-accent transition-colors">Datenschutz</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-white/10 mt-10 pt-6 text-center text-xs text-primary-foreground/40">
-          &copy; {new Date().getFullYear()} Meisterverbund. Alle Rechte vorbehalten.
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-export function PageLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
+      <main>{children}</main>
     </div>
   );
 }
