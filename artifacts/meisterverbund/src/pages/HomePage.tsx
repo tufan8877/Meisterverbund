@@ -19,25 +19,25 @@ export function HomePage() {
 
   return (
     <div>
-      <section className="bg-primary text-primary-foreground py-20 px-4">
+      <section className="bg-primary text-primary-foreground py-16 sm:py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-5">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-5">
             Finden Sie qualifizierte Handwerksmeister in Ihrer Nähe. Lesen Sie
-            <br />
+            <br className="hidden sm:block" />
             Fachbeiträge, aktuelle News und entdecken Sie Angebote aus der Branche.
           </h1>
 
-          <div className="flex flex-wrap justify-center gap-3 mt-8">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
             <Link
               href="/betriebe"
-              className="px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:bg-accent/90 transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-accent text-accent-foreground rounded-lg font-semibold hover:bg-accent/90 transition-colors"
             >
               Betriebe finden
             </Link>
 
             <Link
               href="/kontakt"
-              className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-semibold transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-semibold transition-colors"
             >
               Jetzt kontaktieren
             </Link>
@@ -74,10 +74,10 @@ export function HomePage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-[34px] leading-none font-extrabold tracking-tight text-foreground">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 Meisterbetriebe des Monats
               </h2>
 
@@ -108,11 +108,11 @@ export function HomePage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <h3 className="truncate text-[22px] font-bold leading-tight text-foreground">
+                        <h3 className="truncate text-lg sm:text-xl font-bold leading-tight text-foreground">
                           {biz.name}
                         </h3>
-                        <p className="text-[15px] text-muted-foreground">{biz.branche}</p>
-                        <p className="text-[15px] text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">{biz.branche}</p>
+                        <p className="text-sm text-muted-foreground">
                           {biz.stadt}, {biz.bundesland}
                         </p>
                       </div>
@@ -124,7 +124,7 @@ export function HomePage() {
                       )}
                     </div>
 
-                    <p className="mt-4 text-[15px] leading-6 text-muted-foreground">
+                    <p className="mt-4 text-sm leading-6 text-muted-foreground">
                       {biz.description && biz.description.length > 95
                         ? `${biz.description.slice(0, 95)}...`
                         : biz.description || "Ausgezeichneter Meisterbetrieb mit Qualität, Erfahrung und regionaler Kompetenz."}
@@ -181,11 +181,11 @@ export function HomePage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <h3 className="truncate text-[22px] font-bold leading-tight text-foreground">
+                          <h3 className="truncate text-lg sm:text-xl font-bold leading-tight text-foreground">
                             {biz.name}
                           </h3>
-                          <p className="text-[15px] text-muted-foreground">{biz.branche}</p>
-                          <p className="text-[15px] text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">{biz.branche}</p>
+                          <p className="text-sm text-muted-foreground">
                             {biz.stadt}, {biz.bundesland}
                           </p>
                         </div>
@@ -197,7 +197,7 @@ export function HomePage() {
                         )}
                       </div>
 
-                      <p className="mt-4 text-[15px] leading-6 text-muted-foreground">
+                      <p className="mt-4 text-sm leading-6 text-muted-foreground">
                         {biz.description}
                       </p>
 
@@ -272,9 +272,9 @@ export function HomePage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="truncate text-[20px] font-bold leading-tight text-foreground">{biz.name}</h3>
-                    <p className="text-[15px] text-muted-foreground">{biz.branche}</p>
-                    <p className="text-[15px] text-muted-foreground">
+                    <h3 className="truncate text-lg font-bold leading-tight text-foreground">{biz.name}</h3>
+                    <p className="text-sm text-muted-foreground">{biz.branche}</p>
+                    <p className="text-sm text-muted-foreground">
                       {biz.stadt}, {biz.bundesland}
                     </p>
                   </div>
@@ -287,11 +287,11 @@ export function HomePage() {
 
       <section className="bg-accent py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-[42px] leading-tight font-extrabold text-accent-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-accent-foreground mb-4">
             Sind Sie ein Meisterbetrieb?
           </h2>
 
-          <p className="text-[22px] leading-relaxed text-accent-foreground/90 mb-8">
+          <p className="text-lg sm:text-xl leading-relaxed text-accent-foreground/90 mb-8">
             Melden Sie sich bei uns für einen Beitrag über Ihr Unternehmen.
           </p>
 
