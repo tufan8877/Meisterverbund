@@ -82,7 +82,7 @@ export function ImpressumPage() {
         <p>Registergericht: Handelsgericht Wien</p>
         <p>Firmenbuchnummer: FN 123456 x</p>
         <p>UID: ATU12345678</p>
-        <p>Geschäftsführer: Max Mustermann</p>
+        <p>Geschäftsführer: Tufan Dönmez</p>
         <p>E-Mail: <a href="mailto:office@meisterverbund.at" className="text-primary">office@meisterverbund.at</a></p>
       </div>
     </div>
