@@ -217,11 +217,97 @@ export function Header() {
   );
 }
 
+export function Footer() {
+  return (
+    <footer className="mt-16 bg-foreground text-primary-foreground">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+          <div className="md:col-span-2">
+            <div className="mb-3 text-2xl font-extrabold sm:text-3xl">
+              <span className="text-accent">M</span>eisterverbund
+            </div>
+
+            <div className="mb-2 flex items-center gap-2 text-sm font-medium text-primary-foreground/85">
+              <span>Plattform für österreichische Meisterbetriebe</span>
+              <AustriaFlag />
+            </div>
+
+            <p className="text-sm leading-relaxed text-primary-foreground/70">
+              Die Plattform für österreichische Meisterbetriebe. Qualität, Vertrauen und Gemeinschaft.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground/60">
+              Inhalte
+            </h3>
+            <ul className="space-y-2 text-sm text-primary-foreground/80">
+              <li>
+                <Link href="/blog" className="transition-colors hover:text-accent">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/news" className="transition-colors hover:text-accent">
+                  News
+                </Link>
+              </li>
+              <li>
+                <Link href="/angebote" className="transition-colors hover:text-accent">
+                  Angebote
+                </Link>
+              </li>
+              <li>
+                <Link href="/betriebe" className="transition-colors hover:text-accent">
+                  Betriebe
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground/60">
+              Rechtliches
+            </h3>
+            <ul className="space-y-2 text-sm text-primary-foreground/80">
+              <li>
+                <Link href="/ueber-uns" className="transition-colors hover:text-accent">
+                  Über uns
+                </Link>
+              </li>
+              <li>
+                <Link href="/kontakt" className="transition-colors hover:text-accent">
+                  Kontakt
+                </Link>
+              </li>
+              <li>
+                <Link href="/impressum" className="transition-colors hover:text-accent">
+                  Impressum
+                </Link>
+              </li>
+              <li>
+                <Link href="/datenschutz" className="transition-colors hover:text-accent">
+                  Datenschutz
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-center text-xs text-primary-foreground/40">
+          © {new Date().getFullYear()} Meisterverbund. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export function PageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">{children}</main>
+      <Footer />
     </div>
   );
 }
