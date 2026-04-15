@@ -3,6 +3,20 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLogout } from "@workspace/api-client-react";
 
+function AustriaFlag() {
+  return (
+    <span
+      aria-label="Österreich"
+      title="Österreich"
+      className="inline-block h-[12px] w-[18px] overflow-hidden rounded-[2px] border border-white/30 align-middle shadow-sm sm:h-[13px] sm:w-[19px]"
+    >
+      <span className="block h-1/3 bg-red-600" />
+      <span className="block h-1/3 bg-white" />
+      <span className="block h-1/3 bg-red-600" />
+    </span>
+  );
+}
+
 export function Header() {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const logoutMutation = useLogout();
@@ -27,19 +41,21 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex min-h-[84px] items-center justify-between py-3">
+        <div className="flex min-h-[76px] items-center justify-between py-3 sm:min-h-[80px]">
           <Link href="/" className="shrink-0 transition-opacity hover:opacity-90">
             <div className="flex flex-col leading-none">
-              <span className="text-[30px] font-extrabold tracking-tight sm:text-[36px] lg:text-[40px]">
+              <span className="text-[24px] font-extrabold tracking-tight sm:text-[30px] lg:text-[32px] xl:text-[34px]">
                 <span className="text-accent">M</span>eisterverbund
               </span>
-              <span className="mt-1 text-[10px] font-medium text-primary-foreground/80 sm:text-[11px] lg:text-xs">
-                Plattform für österreichische Meisterbetriebe 🇦🇹
+
+              <span className="mt-1.5 flex items-center gap-2 text-[11px] font-medium leading-none text-primary-foreground/85 sm:text-[13px] lg:text-[14px]">
+                <span>Plattform für österreichische Meisterbetriebe</span>
+                <AustriaFlag />
               </span>
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden items-center gap-1 lg:flex">
             {navLinks.map((link) => {
               const active = location === link.href || location.startsWith(`${link.href}/`);
               return (
@@ -56,7 +72,7 @@ export function Header() {
             })}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden items-center gap-2 lg:flex">
             {isAuthenticated ? (
               <>
                 {isAdmin && (
@@ -210,9 +226,12 @@ export function Footer() {
             <div className="mb-3 text-2xl font-extrabold sm:text-3xl">
               <span className="text-accent">M</span>eisterverbund
             </div>
-            <p className="mb-2 text-sm font-medium text-primary-foreground/85">
-              Plattform für österreichische Meisterbetriebe 🇦🇹
-            </p>
+
+            <div className="mb-2 flex items-center gap-2 text-sm font-medium text-primary-foreground/85">
+              <span>Plattform für österreichische Meisterbetriebe</span>
+              <AustriaFlag />
+            </div>
+
             <p className="text-sm leading-relaxed text-primary-foreground/70">
               Die Plattform für österreichische Meisterbetriebe. Qualität, Vertrauen und Gemeinschaft.
             </p>
@@ -275,7 +294,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-primary-foreground/40">
+        <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-center text-xs text-primary-foreground/40">
           © {new Date().getFullYear()} Meisterverbund. Alle Rechte vorbehalten.
         </div>
       </div>
