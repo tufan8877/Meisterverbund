@@ -1,55 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1030 310" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="69 375 882 274" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="title desc">
   <title id="title">Meisterverbund Österreich</title>
-  <desc id="desc">Goldenes Meisterverbund-Wappen mit dunkelblauer Wortmarke.</desc>
-  <defs>
-    <linearGradient id="outerGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#8f5c08"/>
-      <stop offset="0.10" stop-color="#f7d66d"/>
-      <stop offset="0.28" stop-color="#b6750d"/>
-      <stop offset="0.48" stop-color="#ffe58a"/>
-      <stop offset="0.68" stop-color="#bd7b12"/>
-      <stop offset="0.88" stop-color="#f2cb58"/>
-      <stop offset="1" stop-color="#8a5607"/>
-    </linearGradient>
-    <linearGradient id="innerGold" x1="0" y1="0" x2="0.9" y2="1">
-      <stop offset="0" stop-color="#f8cf55"/>
-      <stop offset="0.18" stop-color="#b8730a"/>
-      <stop offset="0.42" stop-color="#f4c94b"/>
-      <stop offset="0.62" stop-color="#a86608"/>
-      <stop offset="0.84" stop-color="#e7b43c"/>
-      <stop offset="1" stop-color="#8a5407"/>
-    </linearGradient>
-    <linearGradient id="faceGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f7ca46"/>
-      <stop offset="0.22" stop-color="#c88416"/>
-      <stop offset="0.46" stop-color="#f1c347"/>
-      <stop offset="0.64" stop-color="#a56308"/>
-      <stop offset="0.85" stop-color="#e4ad2f"/>
-      <stop offset="1" stop-color="#7d4b05"/>
-    </linearGradient>
-    <linearGradient id="monoGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7d4a06"/>
-      <stop offset="0.4" stop-color="#f7d771"/>
-      <stop offset="0.65" stop-color="#a8660a"/>
-      <stop offset="1" stop-color="#f1c95a"/>
-    </linearGradient>
-    <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#6b4307" flood-opacity=".26"/>
-    </filter>
-  </defs>
-
-  <g transform="translate(20 8)" filter="url(#shadow)">
-    <path d="M132 7C101 31 72 43 33 55v89c0 69 34 116 99 153 65-37 99-84 99-153V55c-39-12-68-24-99-48z" fill="url(#outerGold)" stroke="#a56b0b" stroke-width="3.5"/>
-    <path d="M132 24C105 44 79 55 47 65v77c0 59 28 101 85 135 57-34 85-76 85-135V65c-32-10-58-21-85-41z" fill="#fff9e7" stroke="#d7aa3a" stroke-width="7"/>
-    <path d="M132 36C108 53 86 62 58 71v69c0 51 24 88 74 119 50-31 74-68 74-119V71c-28-9-50-18-74-35z" fill="url(#innerGold)" stroke="#9e6408" stroke-width="4"/>
-    <path d="M132 49C112 63 93 71 70 78v59c0 43 19 75 62 102 43-27 62-59 62-102V78c-23-7-42-15-62-29z" fill="url(#faceGold)" opacity=".92"/>
-    <path d="M90 91v116M90 91h14l28 42 28-42h14v116h-15v-79l-27 40-27-40v79H90z" fill="none" stroke="#825108" stroke-width="4.5" stroke-linejoin="miter"/>
-    <path d="M101 103v84M163 103v84M101 103l31 46 31-46M101 153l31 44 31-44" fill="none" stroke="url(#monoGold)" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
-    <path d="M75 81c19-5 39-14 57-27 18 13 38 22 57 27" fill="none" stroke="#ffe88c" stroke-width="2.5" opacity=".85"/>
-  </g>
-
-  <g fill="#0a2d52" font-family="Arial, Helvetica, sans-serif">
-    <text x="308" y="155" font-size="72" font-weight="800" letter-spacing="1.5">MEISTERVERBUND</text>
-    <text x="456" y="219" font-size="52" font-weight="500" letter-spacing="6.5">ÖSTERREICH</text>
-  </g>
+  <desc id="desc">Originales Meisterverbund-Logo aus der bereitgestellten PNG-Datei, ohne Neuzeichnung.</desc>
+  <image href="/Meisterverbund%20Logo.png" x="0" y="0" width="1024" height="1024" preserveAspectRatio="none"/>
 </svg>
