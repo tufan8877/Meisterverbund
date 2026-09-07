@@ -1,0 +1,26 @@
+.brand-logo-link{display:flex;align-items:center;line-height:0;min-width:0}
+.brand-logo-image{display:block;width:300px;max-width:46vw;height:auto;object-fit:contain;image-rendering:auto}
+.footer-brand-shield{display:block;width:38px;height:auto;object-fit:contain;image-rendering:auto}
+.auth-actions{display:flex;gap:8px;align-items:center}
+.auth-name{font-size:.78rem;font-weight:700}
+.meister-seal{display:block;width:min(82%,430px);max-width:100%;height:auto;object-fit:contain;image-rendering:auto}
+.meister-seal-small{width:min(82%,430px)}
+.panel-placeholder{overflow:hidden;padding:28px;background:#fff}
+
+@media(max-width:900px){
+  .topbar-inner{min-height:74px}
+  .brand-logo-image{width:min(290px,72vw);max-width:none}
+  .utility-links{display:none}
+  .auth-actions{display:none}
+  .nav-inner{min-height:58px;justify-content:flex-end}
+  .mobile-toggle{margin-left:auto}
+  .meister-seal,.meister-seal-small{width:min(88%,430px)}
+}
+
+@media(max-width:600px){
+  .topbar-inner{min-height:68px}
+  .brand-logo-image{width:min(250px,78vw)}
+  .panel-placeholder{min-height:0;padding:24px 14px}
+  .meister-seal,.meister-seal-small{width:min(94%,420px)}
+  .footer-brand-shield{width:34px}
+}
