@@ -11,8 +11,28 @@ const navItems = [
   ['/news', 'News'],
 ];
 
-export function Brand() {
-  return <Link href="/" className="brand" data-testid="link-brand"><span className="brand-mark" aria-hidden="true">M.</span><span>Meisterverbund<small>Österreich</small></span></Link>;
+export function Brand({ footer = false }: { footer?: boolean }) {
+  if (footer) {
+    return (
+      <Link href="/" className="brand" data-testid="link-brand" style={{ gap: 12 }}>
+        <img src="/favicon.svg" alt="" aria-hidden="true" style={{ width: 38, height: 44, display: 'block' }} />
+        <span style={{ color: '#fff', lineHeight: 1.05 }}>
+          Meisterverbund
+          <small style={{ color: '#b8bcc3' }}>Österreich</small>
+        </span>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href="/" className="brand" data-testid="link-brand" aria-label="Meisterverbund Österreich – Startseite">
+      <img
+        src="/meisterverbund-logo.svg"
+        alt="Meisterverbund Österreich"
+        style={{ width: 228, maxWidth: '42vw', height: 'auto', display: 'block' }}
+      />
+    </Link>
+  );
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -40,7 +60,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 }
 
 function Footer() {
-  return <footer className="footer"><div className="container footer-grid"><div><Brand /><p className="footer-copy">Plattform für österreichische Meisterbetriebe. Für Qualität, die bleibt.</p></div><div><h3>Entdecken</h3><div className="footer-links"><Link href="/meisterbetriebe">Meisterbetriebe</Link><Link href="/branchen">Branchen</Link><Link href="/ueber-uns">Über uns</Link><Link href="/fuer-betriebe">Für Betriebe</Link><Link href="/news">News</Link></div></div><div><h3>Service</h3><div className="footer-links"><Link href="/faq">FAQ</Link><Link href="/kontakt">Kontakt</Link><Link href="/impressum">Impressum</Link><Link href="/datenschutz">Datenschutz</Link></div></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Meisterverbund Österreich</span><span>Ein gemeinsamer Auftritt für echte Meisterqualität.</span></div></footer>;
+  return <footer className="footer"><div className="container footer-grid"><div><Brand footer /><p className="footer-copy">Plattform für österreichische Meisterbetriebe. Für Qualität, die bleibt.</p></div><div><h3>Entdecken</h3><div className="footer-links"><Link href="/meisterbetriebe">Meisterbetriebe</Link><Link href="/branchen">Branchen</Link><Link href="/ueber-uns">Über uns</Link><Link href="/fuer-betriebe">Für Betriebe</Link><Link href="/news">News</Link></div></div><div><h3>Service</h3><div className="footer-links"><Link href="/faq">FAQ</Link><Link href="/kontakt">Kontakt</Link><Link href="/impressum">Impressum</Link><Link href="/datenschutz">Datenschutz</Link></div></div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Meisterverbund Österreich</span><span>Ein gemeinsamer Auftritt für echte Meisterqualität.</span></div></footer>;
 }
 
 export function PageHero({ eyebrow, title, children }: { eyebrow:string; title:string; children?:ReactNode }) { return <section className="page-hero"><div className="container reveal"><div className="breadcrumbs"><Link href="/">Startseite</Link> <span>/</span> {title}</div><div className="eyebrow" style={{marginTop:30}}>{eyebrow}</div><h1 className="display">{title}</h1>{children}</div></section>; }
