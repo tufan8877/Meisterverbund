@@ -22,36 +22,30 @@ function restore(prefix, output) {
 restore('app.', 'src/App.tsx');
 restore('css.', 'src/index.css');
 
-// Use the original PNG assets directly. The former SVG wrappers referenced
-// external PNG files and can render blank when the SVG itself is loaded via <img>.
+// Use the SVG logo in the website. It preserves the exact supplied logo artwork.
+// The seal remains the original PNG because only the logo was requested here.
 let app = readFileSync('src/App.tsx', 'utf8');
 app = app
-  .replaceAll('/images/Meisterverbund_Logo.svg', '/images/Meisterverbund_Logo.png')
+  .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
   .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
 writeFileSync('src/App.tsx', app);
 
-// The original logo PNG is square and contains large white margins. Crop it
-// visually to the actual horizontal wordmark without changing the source file.
 appendFileSync('src/index.css', `
 
-/* Meisterverbund original brand assets */
+/* Meisterverbund exact brand logo */
 .brand img,
 .auth-logo img {
   display: block;
   width: 100%;
-  aspect-ratio: 880 / 272;
   height: auto;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
 }
 
 .footer-brand img {
   display: block;
   width: 190px;
-  aspect-ratio: 880 / 272;
   height: auto;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
   filter: none !important;
   opacity: 1 !important;
   background: #fff;
