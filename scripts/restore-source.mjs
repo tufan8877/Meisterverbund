@@ -20,19 +20,26 @@ restore('css.', 'src/index.css');
 let app = readFileSync('src/App.tsx', 'utf8');
 app = app.replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
 
-// Use the dedicated SVG asset everywhere the logo is rendered.
+// The external SVG file was not reliable in Safari/iOS. Render the logo as a
+// real inline SVG in the document instead. The viewBox crops the large white
+// 1024x1024 source canvas to the actual Meisterverbund artwork.
+const logoSvg = `<svg className="meisterverbund-logo-svg" viewBox="69 375 882 274" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meisterverbund Österreich" preserveAspectRatio="xMidYMid meet"><image href="/images/Meisterverbund_Logo.png" x="0" y="0" width="1024" height="1024" preserveAspectRatio="none" /></svg>`;
+
 app = app
-  .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
-  .replace(/<object([^>]*?)(?:data|src)=["']\/images\/Meisterverbund_Logo\.svg["']([^>]*?)\/>/g, '<img src="/images/Meisterverbund_Logo.svg" alt="Meisterverbund Österreich" className="meisterverbund-logo-image" />');
+  .replace(/<img([^>]*?)src=["']\/images\/Meisterverbund_Logo\.(?:png|svg)["']([^>]*?)\/>/g, logoSvg)
+  .replace(/<object([^>]*?)(?:data|src)=["']\/images\/Meisterverbund_Logo\.svg["']([^>]*?)\/>/g, logoSvg);
 
 writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* Meisterverbund Österreich logo: compact header/footer, no oversized white block */
+/* Meisterverbund logo – fixed compact SVG dimensions */
 .brand,
 .auth-logo,
 .footer-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
   width: auto !important;
   height: auto !important;
   min-width: 0 !important;
@@ -42,51 +49,46 @@ appendFileSync('src/index.css', `
   margin: 0 !important;
   background: transparent !important;
   overflow: visible !important;
-  display: inline-flex !important;
-  align-items: center !important;
   flex: 0 0 auto !important;
 }
 
-.brand img,
-.auth-logo img,
-.footer-brand img,
-.meisterverbund-logo-image {
+.meisterverbund-logo-svg {
   display: block !important;
   width: 286px !important;
-  max-width: 42vw !important;
-  height: auto !important;
-  aspect-ratio: 882 / 274 !important;
-  object-fit: contain !important;
+  height: 89px !important;
+  max-width: min(68vw, 286px) !important;
+  min-width: 0 !important;
+  max-height: 89px !important;
+  flex: 0 0 auto !important;
   background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  overflow: visible !important;
 }
 
-.footer-brand img,
-.footer-brand .meisterverbund-logo-image {
+.footer-brand .meisterverbund-logo-svg {
   width: 220px !important;
+  height: 68px !important;
   max-width: 100% !important;
+  max-height: 68px !important;
 }
 
 @media (max-width: 760px) {
   .brand,
   .auth-logo {
-    max-width: calc(100vw - 100px) !important;
+    max-width: calc(100vw - 105px) !important;
   }
 
-  .brand img,
-  .auth-logo img,
-  .meisterverbund-logo-image {
-    width: 245px !important;
-    max-width: calc(100vw - 115px) !important;
-    height: auto !important;
+  .meisterverbund-logo-svg {
+    width: 238px !important;
+    height: 74px !important;
+    max-width: calc(100vw - 120px) !important;
+    max-height: 74px !important;
   }
 
-  .footer-brand img,
-  .footer-brand .meisterverbund-logo-image {
-    width: 205px !important;
+  .footer-brand .meisterverbund-logo-svg {
+    width: 200px !important;
+    height: 62px !important;
     max-width: 72vw !important;
+    max-height: 62px !important;
   }
 }
 `);
