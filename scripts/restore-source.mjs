@@ -115,24 +115,22 @@ function buildLogoSvgs() {
   const headerLogo = makeTransparentCroppedLogo();
   writeEmbeddedSvg('public/images/Meisterverbund_Logo.svg', headerLogo);
 
-  // Footer variant: keep the gold shield exactly as-is, but change only the
-  // dark navy-blue wordmark pixels to white so it is readable on the navy footer.
+  // High-quality footer variant:
+  // keep the gold shield untouched and recolor the entire wordmark region to white.
+  // Crucially, alpha values are preserved exactly, including anti-aliased edge pixels.
+  // This avoids the speckled/jagged result caused by color-threshold pixel detection.
   const footerLogo = PNG.sync.read(PNG.sync.write(headerLogo));
   const d = footerLogo.data;
+  const wordmarkStartX = Math.round(footerLogo.width * 0.285);
 
-  for (let i = 0; i < d.length; i += 4) {
-    if (d[i + 3] === 0) continue;
-    const r = d[i];
-    const g = d[i + 1];
-    const b = d[i + 2];
-
-    // Meisterverbund navy is blue-dominant. Gold pixels are red/yellow-dominant,
-    // so this keeps the shield and its metallic details untouched.
-    const isNavy = b >= 45 && b > r * 1.18 && b > g * 1.05 && r < 130 && g < 145;
-    if (isNavy) {
+  for (let y = 0; y < footerLogo.height; y++) {
+    for (let x = wordmarkStartX; x < footerLogo.width; x++) {
+      const i = (y * footerLogo.width + x) * 4;
+      if (d[i + 3] === 0) continue;
       d[i] = 248;
       d[i + 1] = 248;
       d[i + 2] = 248;
+      // Keep the original alpha channel exactly as it is.
     }
   }
 
@@ -148,7 +146,7 @@ app = app
   .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
   .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
 
-// Only the footer gets the special white-wordmark logo. Header stays unchanged.
+// Only the footer gets the dedicated white-wordmark version.
 app = app.replace(
   /(<[^>]+className=["'][^"']*footer-brand[^"']*["'][^>]*>[\s\S]*?<img[^>]+src=["'])\/images\/Meisterverbund_Logo\.svg(["'])/,
   '$1/images/Meisterverbund_Logo_Footer.svg$2'
@@ -158,7 +156,7 @@ writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* Meisterverbund logo – transparent header + dedicated footer variant */
+/* Meisterverbund logo – transparent header + high-quality footer variant */
 .site-header {
   overflow: hidden !important;
 }
@@ -196,6 +194,7 @@ appendFileSync('src/index.css', `
   margin: 0 !important;
   filter: none !important;
   opacity: 1 !important;
+  image-rendering: auto !important;
 }
 
 .brand img {
@@ -223,7 +222,7 @@ appendFileSync('src/index.css', `
 }
 
 .footer-brand img {
-  width: 240px !important;
+  width: 260px !important;
   height: auto !important;
   max-width: 100% !important;
   margin-bottom: 18px !important;
@@ -256,8 +255,8 @@ appendFileSync('src/index.css', `
   }
 
   .footer-brand img {
-    width: 230px !important;
-    max-width: 78vw !important;
+    width: 250px !important;
+    max-width: 82vw !important;
   }
 }
 `);
