@@ -22,47 +22,47 @@ function restore(prefix, output) {
 restore('app.', 'src/App.tsx');
 restore('css.', 'src/index.css');
 
-// Use the SVG logo throughout the site. Render it as an <object> rather than
-// an <img>, so the SVG may safely load the exact original artwork it contains.
-// pointer-events are disabled below so the surrounding home links still work.
+// Render the exact original Meisterverbund logo through inline SVG.
+// The original PNG remains untouched and is cropped only by the SVG viewBox.
+// This avoids the browser restriction that can make an SVG loaded through <img>
+// fail when that SVG references another external image file.
 let app = readFileSync('src/App.tsx', 'utf8');
+
+const logoImg = '<img src="/images/Meisterverbund_Logo.svg" alt="Meisterverbund Österreich" />';
+const inlineLogo = '<svg className="meisterverbund-logo-svg" viewBox="69 375 882 274" role="img" aria-label="Meisterverbund Österreich" preserveAspectRatio="xMidYMid meet"><image href="/images/Meisterverbund_Logo.png" x="0" y="0" width="1024" height="1024" preserveAspectRatio="none" /></svg>';
+
 app = app
-  .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
-  .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png')
-  .replace(/<img([^>]*?)src="\/images\/Meisterverbund_Logo\.svg"([^>]*?)\/>/g, '<object$1data="/images/Meisterverbund_Logo.svg" type="image/svg+xml"$2/>');
+  .replaceAll('<img src="/images/Meisterverbund_Logo.png" alt="Meisterverbund Österreich" />', inlineLogo)
+  .replaceAll(logoImg, inlineLogo)
+  .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
+
 writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* Meisterverbund exact SVG brand logo */
-.brand img,
-.brand object,
-.auth-logo img,
-.auth-logo object {
+/* Meisterverbund exact 1:1 logo rendered as inline SVG */
+.meisterverbund-logo-svg {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 882 / 274;
-  object-fit: contain;
-  pointer-events: none;
+  overflow: visible;
 }
 
-.footer-brand img,
-.footer-brand object {
-  display: block;
+.brand .meisterverbund-logo-svg,
+.auth-logo .meisterverbund-logo-svg {
+  width: 100%;
+}
+
+.footer-brand .meisterverbund-logo-svg {
   width: 190px;
-  height: auto;
-  aspect-ratio: 882 / 274;
-  object-fit: contain;
-  pointer-events: none;
+  max-width: 100%;
+  background: #fff;
   filter: none !important;
   opacity: 1 !important;
-  background: #fff;
-  padding: 4px 6px;
 }
 
 @media (max-width: 760px) {
-  .footer-brand img,
-  .footer-brand object { width: 175px; }
+  .footer-brand .meisterverbund-logo-svg { width: 175px; }
 }
 `);
