@@ -20,9 +20,8 @@ restore('css.', 'src/index.css');
 let app = readFileSync('src/App.tsx', 'utf8');
 app = app.replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
 
-// The external SVG file was not reliable in Safari/iOS. Render the logo as a
-// real inline SVG in the document instead. The viewBox crops the large white
-// 1024x1024 source canvas to the actual Meisterverbund artwork.
+// Keep the logo visible on Safari/iOS by rendering it inline, but strictly
+// constrain the header/footer boxes so the logo can never stretch the layout.
 const logoSvg = `<svg className="meisterverbund-logo-svg" viewBox="69 375 882 274" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meisterverbund Österreich" preserveAspectRatio="xMidYMid meet"><image href="/images/Meisterverbund_Logo.png" x="0" y="0" width="1024" height="1024" preserveAspectRatio="none" /></svg>`;
 
 app = app
@@ -33,55 +32,116 @@ writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* Meisterverbund logo – fixed compact SVG dimensions */
-.brand,
-.auth-logo,
-.footer-brand {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  width: auto !important;
-  height: auto !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  max-width: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  overflow: visible !important;
-  flex: 0 0 auto !important;
+/* FINAL Meisterverbund logo/header sizing fix */
+.site-header {
+  overflow: hidden !important;
 }
 
-.meisterverbund-logo-svg {
-  display: block !important;
-  width: 286px !important;
-  height: 89px !important;
-  max-width: min(68vw, 286px) !important;
-  min-width: 0 !important;
-  max-height: 89px !important;
-  flex: 0 0 auto !important;
+.header-inner {
+  height: 86px !important;
+  min-height: 86px !important;
+  max-height: 86px !important;
+  overflow: hidden !important;
+}
+
+.brand {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 230px !important;
+  min-width: 230px !important;
+  max-width: 230px !important;
+  height: 72px !important;
+  min-height: 72px !important;
+  max-height: 72px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
   background: transparent !important;
+  overflow: hidden !important;
+  flex: 0 0 230px !important;
+}
+
+.brand .meisterverbund-logo-svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  flex: none !important;
+  overflow: hidden !important;
+}
+
+.auth-logo {
+  width: 220px !important;
+  height: 68px !important;
+  margin: 0 auto 30px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+.auth-logo .meisterverbund-logo-svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+.footer-brand {
   overflow: visible !important;
 }
 
 .footer-brand .meisterverbund-logo-svg {
+  display: block !important;
   width: 220px !important;
   height: 68px !important;
   max-width: 100% !important;
   max-height: 68px !important;
+  margin: 0 0 18px 0 !important;
 }
 
 @media (max-width: 760px) {
-  .brand,
-  .auth-logo {
-    max-width: calc(100vw - 105px) !important;
+  .site-header {
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+    overflow: hidden !important;
   }
 
-  .meisterverbund-logo-svg {
-    width: 238px !important;
-    height: 74px !important;
-    max-width: calc(100vw - 120px) !important;
-    max-height: 74px !important;
+  .header-inner {
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+    overflow: hidden !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .brand {
+    width: 220px !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 105px) !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    flex: 0 1 220px !important;
+    overflow: hidden !important;
+  }
+
+  .brand .meisterverbund-logo-svg {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 64px !important;
+  }
+
+  .menu-button {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
   }
 
   .footer-brand .meisterverbund-logo-svg {
