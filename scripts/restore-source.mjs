@@ -15,9 +15,8 @@ function restore(prefix, output) {
   writeFileSync(output, Buffer.from(base64, 'base64'));
 }
 
-function buildTransparentLogoSvg() {
+function makeTransparentCroppedLogo() {
   const sourcePath = 'public/images/Meisterverbund_Logo.png';
-  const svgPath = 'public/images/Meisterverbund_Logo.svg';
   const source = PNG.sync.read(readFileSync(sourcePath));
   const { width, height, data } = source;
 
@@ -59,7 +58,6 @@ function buildTransparentLogoSvg() {
     const x = queueX[head];
     const y = queueY[head];
     head++;
-
     if (!isBackground(x, y)) continue;
 
     const p = (y * width + x) * 4;
@@ -104,25 +102,63 @@ function buildTransparentLogoSvg() {
     }
   }
 
-  const embedded = PNG.sync.write(cropped).toString('base64');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${cropWidth}" height="${cropHeight}" viewBox="0 0 ${cropWidth} ${cropHeight}" role="img" aria-label="Meisterverbund Österreich"><image width="${cropWidth}" height="${cropHeight}" href="data:image/png;base64,${embedded}" preserveAspectRatio="xMidYMid meet"/></svg>`;
-  writeFileSync(svgPath, svg);
+  return cropped;
+}
+
+function writeEmbeddedSvg(path, png) {
+  const embedded = PNG.sync.write(png).toString('base64');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${png.width}" height="${png.height}" viewBox="0 0 ${png.width} ${png.height}" role="img" aria-label="Meisterverbund Österreich"><image width="${png.width}" height="${png.height}" href="data:image/png;base64,${embedded}" preserveAspectRatio="xMidYMid meet"/></svg>`;
+  writeFileSync(path, svg);
+}
+
+function buildLogoSvgs() {
+  const headerLogo = makeTransparentCroppedLogo();
+  writeEmbeddedSvg('public/images/Meisterverbund_Logo.svg', headerLogo);
+
+  // Footer variant: keep the gold shield exactly as-is, but change only the
+  // dark navy-blue wordmark pixels to white so it is readable on the navy footer.
+  const footerLogo = PNG.sync.read(PNG.sync.write(headerLogo));
+  const d = footerLogo.data;
+
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] === 0) continue;
+    const r = d[i];
+    const g = d[i + 1];
+    const b = d[i + 2];
+
+    // Meisterverbund navy is blue-dominant. Gold pixels are red/yellow-dominant,
+    // so this keeps the shield and its metallic details untouched.
+    const isNavy = b >= 45 && b > r * 1.18 && b > g * 1.05 && r < 130 && g < 145;
+    if (isNavy) {
+      d[i] = 248;
+      d[i + 1] = 248;
+      d[i + 2] = 248;
+    }
+  }
+
+  writeEmbeddedSvg('public/images/Meisterverbund_Logo_Footer.svg', footerLogo);
 }
 
 restore('app.', 'src/App.tsx');
 restore('css.', 'src/index.css');
-buildTransparentLogoSvg();
+buildLogoSvgs();
 
 let app = readFileSync('src/App.tsx', 'utf8');
 app = app
   .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
   .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
 
+// Only the footer gets the special white-wordmark logo. Header stays unchanged.
+app = app.replace(
+  /(<[^>]+className=["'][^"']*footer-brand[^"']*["'][^>]*>[\s\S]*?<img[^>]+src=["'])\/images\/Meisterverbund_Logo\.svg(["'])/,
+  '$1/images/Meisterverbund_Logo_Footer.svg$2'
+);
+
 writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* Meisterverbund logo – transparent SVG, compact in header/footer */
+/* Meisterverbund logo – transparent header + dedicated footer variant */
 .site-header {
   overflow: hidden !important;
 }
@@ -158,12 +194,8 @@ appendFileSync('src/index.css', `
   border: 0 !important;
   padding: 0 !important;
   margin: 0 !important;
-  opacity: 1 !important;
-}
-
-.brand img,
-.auth-logo img {
   filter: none !important;
+  opacity: 1 !important;
 }
 
 .brand img {
@@ -191,12 +223,10 @@ appendFileSync('src/index.css', `
 }
 
 .footer-brand img {
-  width: 220px !important;
+  width: 240px !important;
   height: auto !important;
   max-width: 100% !important;
   margin-bottom: 18px !important;
-  filter: brightness(0) invert(1) !important;
-  opacity: .96 !important;
 }
 
 @media (max-width: 760px) {
@@ -226,8 +256,8 @@ appendFileSync('src/index.css', `
   }
 
   .footer-brand img {
-    width: 200px !important;
-    max-width: 72vw !important;
+    width: 230px !important;
+    max-width: 78vw !important;
   }
 }
 `);
