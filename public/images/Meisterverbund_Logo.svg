@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="69 375 882 274" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="title desc">
-  <title id="title">Meisterverbund Österreich</title>
-  <desc id="desc">Meisterverbund Österreich Logo</desc>
-  <image href="/images/Meisterverbund_Logo.png" x="0" y="0" width="1024" height="1024" preserveAspectRatio="none"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="881" height="274" viewBox="0 0 881 274" role="img" aria-labelledby="title desc">
+<title id="title">Meisterverbund Österreich</title>
+<desc id="desc">Meisterverbund Österreich Logo mit transparentem Hintergrund.</desc>
+<image width="881" height="274" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA3EAAAE...TRUNCATED_FOR_TOOL?" preserveAspectRatio="xMidYMid meet"/>
 </svg>
