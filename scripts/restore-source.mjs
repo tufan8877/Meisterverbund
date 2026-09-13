@@ -22,30 +22,39 @@ function restore(prefix, output) {
 restore('app.', 'src/App.tsx');
 restore('css.', 'src/index.css');
 
-// Use the SVG logo in the website. It preserves the exact supplied logo artwork.
-// The seal remains the original PNG because only the logo was requested here.
+// Use the SVG logo throughout the site. Render it as an <object> rather than
+// an <img>, so the SVG may safely load the exact original artwork it contains.
+// pointer-events are disabled below so the surrounding home links still work.
 let app = readFileSync('src/App.tsx', 'utf8');
 app = app
   .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
-  .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
+  .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png')
+  .replace(/<img([^>]*?)src="\/images\/Meisterverbund_Logo\.svg"([^>]*?)\/>/g, '<object$1data="/images/Meisterverbund_Logo.svg" type="image/svg+xml"$2/>');
 writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* Meisterverbund exact brand logo */
+/* Meisterverbund exact SVG brand logo */
 .brand img,
-.auth-logo img {
+.brand object,
+.auth-logo img,
+.auth-logo object {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 882 / 274;
   object-fit: contain;
+  pointer-events: none;
 }
 
-.footer-brand img {
+.footer-brand img,
+.footer-brand object {
   display: block;
   width: 190px;
   height: auto;
+  aspect-ratio: 882 / 274;
   object-fit: contain;
+  pointer-events: none;
   filter: none !important;
   opacity: 1 !important;
   background: #fff;
@@ -53,6 +62,7 @@ appendFileSync('src/index.css', `
 }
 
 @media (max-width: 760px) {
-  .footer-brand img { width: 175px; }
+  .footer-brand img,
+  .footer-brand object { width: 175px; }
 }
 `);
