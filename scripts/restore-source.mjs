@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { PNG } from 'pngjs';
 
 function restore(prefix, output) {
   const dir = '.source';
@@ -14,25 +15,114 @@ function restore(prefix, output) {
   writeFileSync(output, Buffer.from(base64, 'base64'));
 }
 
+function buildTransparentLogoSvg() {
+  const sourcePath = 'public/images/Meisterverbund_Logo.png';
+  const svgPath = 'public/images/Meisterverbund_Logo.svg';
+  const source = PNG.sync.read(readFileSync(sourcePath));
+  const { width, height, data } = source;
+
+  const seen = new Uint8Array(width * height);
+  const queueX = new Int32Array(width * height);
+  const queueY = new Int32Array(width * height);
+  let head = 0;
+  let tail = 0;
+
+  const push = (x, y) => {
+    if (x < 0 || y < 0 || x >= width || y >= height) return;
+    const i = y * width + x;
+    if (seen[i]) return;
+    seen[i] = 1;
+    queueX[tail] = x;
+    queueY[tail] = y;
+    tail++;
+  };
+
+  const isBackground = (x, y) => {
+    const i = (y * width + x) * 4;
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
+    return a > 0 && r >= 242 && g >= 242 && b >= 242 && Math.max(r, g, b) - Math.min(r, g, b) <= 12;
+  };
+
+  for (let x = 0; x < width; x++) {
+    push(x, 0);
+    push(x, height - 1);
+  }
+  for (let y = 0; y < height; y++) {
+    push(0, y);
+    push(width - 1, y);
+  }
+
+  while (head < tail) {
+    const x = queueX[head];
+    const y = queueY[head];
+    head++;
+
+    if (!isBackground(x, y)) continue;
+
+    const p = (y * width + x) * 4;
+    data[p + 3] = 0;
+
+    push(x - 1, y);
+    push(x + 1, y);
+    push(x, y - 1);
+    push(x, y + 1);
+  }
+
+  let minX = width;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (data[(y * width + x) * 4 + 3] !== 0) {
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  if (maxX < minX || maxY < minY) throw new Error('Could not detect Meisterverbund logo artwork');
+
+  const cropWidth = maxX - minX + 1;
+  const cropHeight = maxY - minY + 1;
+  const cropped = new PNG({ width: cropWidth, height: cropHeight });
+
+  for (let y = 0; y < cropHeight; y++) {
+    for (let x = 0; x < cropWidth; x++) {
+      const src = ((minY + y) * width + (minX + x)) * 4;
+      const dst = (y * cropWidth + x) * 4;
+      cropped.data[dst] = data[src];
+      cropped.data[dst + 1] = data[src + 1];
+      cropped.data[dst + 2] = data[src + 2];
+      cropped.data[dst + 3] = data[src + 3];
+    }
+  }
+
+  const embedded = PNG.sync.write(cropped).toString('base64');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${cropWidth}" height="${cropHeight}" viewBox="0 0 ${cropWidth} ${cropHeight}" role="img" aria-label="Meisterverbund Österreich"><image width="${cropWidth}" height="${cropHeight}" href="data:image/png;base64,${embedded}" preserveAspectRatio="xMidYMid meet"/></svg>`;
+  writeFileSync(svgPath, svg);
+}
+
 restore('app.', 'src/App.tsx');
 restore('css.', 'src/index.css');
+buildTransparentLogoSvg();
 
 let app = readFileSync('src/App.tsx', 'utf8');
-app = app.replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
-
-// Keep the logo visible on Safari/iOS by rendering it inline, but strictly
-// constrain the header/footer boxes so the logo can never stretch the layout.
-const logoSvg = `<svg className="meisterverbund-logo-svg" viewBox="69 375 882 274" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meisterverbund Österreich" preserveAspectRatio="xMidYMid meet"><image href="/images/Meisterverbund_Logo.png" x="0" y="0" width="1024" height="1024" preserveAspectRatio="none" /></svg>`;
-
 app = app
-  .replace(/<img([^>]*?)src=["']\/images\/Meisterverbund_Logo\.(?:png|svg)["']([^>]*?)\/>/g, logoSvg)
-  .replace(/<object([^>]*?)(?:data|src)=["']\/images\/Meisterverbund_Logo\.svg["']([^>]*?)\/>/g, logoSvg);
+  .replaceAll('/images/Meisterverbund_Logo.png', '/images/Meisterverbund_Logo.svg')
+  .replaceAll('/images/Meisterverbund_Siegel.svg', '/images/Meisterverbund_Siegel.png');
 
 writeFileSync('src/App.tsx', app);
 
 appendFileSync('src/index.css', `
 
-/* FINAL Meisterverbund logo/header sizing fix */
+/* Meisterverbund logo – transparent SVG, compact in header/footer */
 .site-header {
   overflow: hidden !important;
 }
@@ -49,94 +139,79 @@ appendFileSync('src/index.css', `
   align-items: center !important;
   justify-content: flex-start !important;
   width: 230px !important;
-  min-width: 230px !important;
   max-width: 230px !important;
   height: 72px !important;
-  min-height: 72px !important;
   max-height: 72px !important;
   padding: 0 !important;
   margin: 0 !important;
-  border: 0 !important;
   background: transparent !important;
   overflow: hidden !important;
   flex: 0 0 230px !important;
 }
 
-.brand .meisterverbund-logo-svg {
+.brand img,
+.auth-logo img,
+.footer-brand img {
   display: block !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+.brand img {
   width: 100% !important;
   height: 100% !important;
-  min-width: 0 !important;
   max-width: 100% !important;
-  min-height: 0 !important;
   max-height: 100% !important;
-  flex: none !important;
-  overflow: hidden !important;
 }
 
 .auth-logo {
   width: 220px !important;
   height: 68px !important;
   margin: 0 auto 30px !important;
-  padding: 0 !important;
-  border: 0 !important;
   background: transparent !important;
   overflow: hidden !important;
-  display: block !important;
 }
 
-.auth-logo .meisterverbund-logo-svg {
+.auth-logo img {
   width: 100% !important;
   height: 100% !important;
-  display: block !important;
 }
 
 .footer-brand {
-  overflow: visible !important;
+  background: transparent !important;
 }
 
-.footer-brand .meisterverbund-logo-svg {
-  display: block !important;
+.footer-brand img {
   width: 220px !important;
-  height: 68px !important;
+  height: auto !important;
   max-width: 100% !important;
-  max-height: 68px !important;
-  margin: 0 0 18px 0 !important;
+  margin-bottom: 18px !important;
 }
 
 @media (max-width: 760px) {
-  .site-header {
-    height: 70px !important;
-    min-height: 70px !important;
-    max-height: 70px !important;
-    overflow: hidden !important;
-  }
-
+  .site-header,
   .header-inner {
     height: 70px !important;
     min-height: 70px !important;
     max-height: 70px !important;
-    overflow: hidden !important;
+  }
+
+  .header-inner {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
 
   .brand {
     width: 220px !important;
-    min-width: 0 !important;
     max-width: calc(100vw - 105px) !important;
     height: 64px !important;
-    min-height: 64px !important;
     max-height: 64px !important;
     flex: 0 1 220px !important;
-    overflow: hidden !important;
-  }
-
-  .brand .meisterverbund-logo-svg {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    max-height: 64px !important;
   }
 
   .menu-button {
@@ -144,11 +219,9 @@ appendFileSync('src/index.css', `
     margin-left: auto !important;
   }
 
-  .footer-brand .meisterverbund-logo-svg {
+  .footer-brand img {
     width: 200px !important;
-    height: 62px !important;
     max-width: 72vw !important;
-    max-height: 62px !important;
   }
 }
 `);
