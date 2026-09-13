@@ -158,8 +158,12 @@ appendFileSync('src/index.css', `
   border: 0 !important;
   padding: 0 !important;
   margin: 0 !important;
-  filter: none !important;
   opacity: 1 !important;
+}
+
+.brand img,
+.auth-logo img {
+  filter: none !important;
 }
 
 .brand img {
@@ -191,6 +195,8 @@ appendFileSync('src/index.css', `
   height: auto !important;
   max-width: 100% !important;
   margin-bottom: 18px !important;
+  filter: brightness(0) invert(1) !important;
+  opacity: .96 !important;
 }
 
 @media (max-width: 760px) {
